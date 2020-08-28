@@ -49,14 +49,14 @@ categories: Math
 
  ![[公式]](https://www.zhihu.com/equation?tex=y%3DAx%5E2%2BBx%2BC)
 
-当我们有3个点的时候，我们联立的方程是
+当我们有 3 个点的时候，我们联立的方程是
 
 ![[公式]](https://www.zhihu.com/equation?tex=%5Cbegin%7Balign%7D+Ax_0%5E2%2BBx_0%2BC%26%3Dy_0%5C%5C+Ax_1%5E2%2BBx_1%2BC%26%3Dy_1%5C%5C+Ax_2%5E2%2BBx_2%2BC%26%3Dy_2+%5Cend%7Balign%7D)
 
 *变为矩阵求解问题，结合**克莱姆法则(Cramer‘s Rule)** 我们可以很快得出*
 ![[公式]](https://www.zhihu.com/equation?tex=A%3D%5Cfrac%7B%5Cbegin%7Bvmatrix%7D+y_0+%26+x_0+%26+1+%5C%5C+y_1+%26+x_1+%26+1+%5C%5C+y_2+%26+x_2+%26+1+%5Cend%7Bvmatrix%7D%7D%7B%5Cbegin%7Bvmatrix%7D+x_0%5E2+%26+x_0+%26+1+%5C%5C+x_1%5E2+%26+x_1+%26+1+%5C%5C+x_2%5E2+%26+x_2+%26+1+%5Cend%7Bvmatrix%7D%7D%2C%5C+B%3D%5Cfrac%7B%5Cbegin%7Bvmatrix%7D+x_0%5E2+%26+y_0+%26+1+%5C%5C+x_1%5E2+%26+y_1+%26+1+%5C%5C+x_2%5E2+%26+y_2+%26+1+%5Cend%7Bvmatrix%7D%7D%7B%5Cbegin%7Bvmatrix%7D+x_0%5E2+%26+x_0+%26+1+%5C%5C+x_1%5E2+%26+x_1+%26+1+%5C%5C+x_2%5E2+%26+x_2+%26+1+%5Cend%7Bvmatrix%7D%7D%2C%5C+C%3D%5Cfrac%7B%5Cbegin%7Bvmatrix%7D+x_0%5E2+%26+x_0+%26+y_0+%5C%5C+x_1%5E2+%26+x_1+%26+y_1+%5C%5C+x_2%5E2+%26+x_2+%26+y_2+%5Cend%7Bvmatrix%7D%7D%7B%5Cbegin%7Bvmatrix%7D+x_0%5E2+%26+x_0+%26+1+%5C%5C+x_1%5E2+%26+x_1+%26+1+%5C%5C+x_2%5E2+%26+x_2+%26+1+%5Cend%7Bvmatrix%7D%7D)
 
-以上公式可用的前提是分母不为0，很多资料中在提到插值算法的时候要求各个点互异也是这个原因。实际上这间接证明了插值函数在一定次数上的解的唯一性，如果我们刚刚假设的是一个3次多项式，却只有3个点，方程就变为了3行4列，解是无穷的。因此我们才可以说在 ![[公式]](https://www.zhihu.com/equation?tex=n) 个点互异的情况下可以确定唯一一个 ![[公式]](https://www.zhihu.com/equation?tex=n-1) 次多项式。
+以上公式可用的前提是分母不为 0，很多资料中在提到插值算法的时候要求各个点互异也是这个原因。实际上这间接证明了插值函数在一定次数上的解的唯一性，如果我们刚刚假设的是一个 3 次多项式，却只有 3 个点，方程就变为了 3 行 4 列，解是无穷的。因此我们才可以说在 n 个点互异的情况下可以确定唯一一个 n-1 次多项式。
 
 但是线性方程组在实际应用中是有重大缺陷的：
 
@@ -118,7 +118,20 @@ categories: Math
 
 ### 拉格朗日插值法
 
+**Lagrange在构造函数的时候就是利用了零点的特性，用基函数的现行组合来实现。**
 
+通常我们说基的时候是在说组成空间的不相同的元素，比如基向量组成向量空间，那么基函数的线型组合就构成了一个函数空间。
+![[公式]](https://www.zhihu.com/equation?tex=L%28x%29%3Da_0l_0%28x%29%2Ba_1l_1%28x%29%2Ba_2l_2%28x%29%2B%5Ccdots%2Ba_nl_n%28x%29)
+
+其中 ![[公式]](https://www.zhihu.com/equation?tex=l_i%28x%29+)*为基函数* ![[公式]](https://www.zhihu.com/equation?tex=a_i) 为常数
+
+如果我们让 ![[公式]](https://www.zhihu.com/equation?tex=a_i)*直接等于* ![[公式]](https://www.zhihu.com/equation?tex=y_i) 那我们就只需要构造对应的 ![[公式]](https://www.zhihu.com/equation?tex=l_i%28x_i%29%3D1%2Cl_i%28x_j%29%3D0) 就好了
+一次的条件下 ![[公式]](https://www.zhihu.com/equation?tex=%28x-x_j%29)*满足等于0的条件，*二次的条件下* ![[公式]](https://www.zhihu.com/equation?tex=%28x-x_%7Bj1%7D%29%28x-x_%7Bj2%7D%29)*同理。*
+*加上对应的分母就可以满足条件一。*
+
+![[公式]](https://www.zhihu.com/equation?tex=%5Cbegin%7Balign%7D+l_i%28x%29%26%3D%5Cprod_%7Bj%3D0%2Cj%5Cnot+%3D+i%7D%5En%5Cfrac%7B%28x-x_j%29%7D%7B%28x_i-x_j%29%7D%5C%5C+L%28x%29%26%3D%5Csum_%7Bi%3D0%7D%5Eny_i%5Cprod_%7Bj%3D0%2Cj%5Cnot+%3D+i%7D%5En%5Cfrac%7B%28x-x_j%29%7D%7B%28x_i-x_j%29%7D+%5Cend%7Balign%7D)
+
+如果要找到某种和唯一解的对应关系，我们看一下**克莱姆法则**中的A的分母，是个**范德蒙(Vandermonde)**行列式，可以展开成 ![[公式]](https://www.zhihu.com/equation?tex=V%3D%5Cprod%7Bn%5Cge+i%5Cgt+j%5Cge+0%7D%5En%28xi-xj%29)*,* 如果我们找到所有 ![[公式]](https://www.zhihu.com/equation?tex=x) 的二次项，加在一起，将分母变成V，就会发现分子是 ![[公式]](https://www.zhihu.com/equation?tex=%5Cbegin%7Bvmatrix%7D+y_0+%26+x_0+%26+1+%5C%5C+y_1+%26+x_1+%26+1+%5C%5C+y_2+%26+x_2+%26+1+%5Cend%7Bvmatrix%7D) 行列式按第一列展开而已。
 
 ### 泰勒公式
 
