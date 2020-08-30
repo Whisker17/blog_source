@@ -50,7 +50,7 @@ categories: cryptography | blockchain | 代理重加密
 ### KeyGen && ReKeyGen
 
 * **KeyGen()：** 生成一组公私钥对
-* **ReKeyGen($$sk_A,pk_B$$,N,t)：** 通过 Alice（授权人） 的私钥以及 Bob（被授权人） 的公钥，以及分片的数量 K 和门限值 t，生成一组 kfrag 
+* **ReKeyGen($$sk_A,pk_B$$,N,t)：** 通过 Alice（授权人） 的私钥以及 Bob（被授权人） 的公钥，以及分片的数量 N 和门限值 t，生成一组 kfrag 
 
 ### Encapsulation && Decapsulation
 
