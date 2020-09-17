@@ -15,7 +15,7 @@ categories: blockchain | ZKP
 
 
 
-原文：[Zk-SNARKs: Under the Hood](https://medium.com/@VitalikButerin/zk-snarks-under-the-hood-b33151a013f6)
+原文：[Explaining SNARKs](https://electriccoin.co/blog/snark-explain7/)
 
   <!--more-->
 
@@ -234,6 +234,34 @@ $$F_1 + F_2 = (L_1 + L_2) + X^{d+1} * (R_1 + R_2) + X ^{2(d+1)} * (O_1 + O_2)$$�
 因此，Bob将会请Alice证明F是$$F_i$$的线性组合，这个过程和盲计算是类似的：
 
 Bob选择一个随机的$$\beta \in \mathbb{F}_p^*$$，并把隐藏数$$E(\beta * F_i(s)), ..., E(\beta * F_m(s))$$发送给Alice，并请Alice发回$$E(\beta*F(s))$$。如果她成功了，根据扩展版本的KCA假设，就代表Alice知道如何对$$F_i$$进行线性组合，从而计算出F。
+
+## 添加零知识以隐藏赋值
+
+在zk-SNARK里，Alice想隐藏她的赋值的所有信息，但是这些隐藏数$$E(L(s)), E(R(s)), E(O(s)), E(H(s))$$多少还是提供了一些信息。
+
+比如，给定一些其他的符合条件的赋值($$c_1, ..., c_m$$)，Bob可以分别计算出对应的L', R', O', H'，以及它们的隐藏数$$E(L'(s)), E(R'(s)), E(O'(s)), E(H'(s))$$。如果这些结果与Alice的隐藏数不同，那么他可以断定($$c'_1, ..., c'_m$$)不是Alice的赋值。
+
+为了避免这种的信息泄漏，Alice想**给每个多项式添加一些随机数作为偏移量T**，用以隐藏他的赋值。这样，她选择了随机的$$\sigma_1, \sigma_2, \sigma_3 \in F_p^*$$，并定义：
+
+$$L_z:= L + \sigma_1 * T, R_z := R + \sigma_2 * T, O_z := O + \sigma_3 * T$$。
+
+假设 L, R, O是通过一组正确的赋值得到了，因此对于某个多项式H, 可以使得L * R - O = T * H。因为我们刚刚在每个地方都加了个T的倍数，因此T也能整除$$L_z * R_z - O_z$$。看看我们下面的计算：
+
+$$L_z * R_z - O_z = (L + \sigma_1 * T)(R + \sigma_2 * T) - O - \sigma_3*T
+ =(L*R - O) + L*\sigma_2*T + \sigma_1 * T * R + \sigma_1 \sigma_2*T^2 - \sigma_3*T
+ =T*(H + L* \sigma_2 + \sigma_1 * R + \sigma_1 \sigma_2*T - \sigma_3)$$
+
+如此，我们定义$$H_z = H + L* \sigma_2 + \sigma_1 * R + \sigma_1 \sigma_2*T - \sigma_3$$，我们就得到了： $$L_z * R_z - O_z = T * H_z$$。因此，如果Alice没使用L, R, O, H，而使用了$$L_z, R_z, O_z, H_z$$，那么Bob仍能接受。
+
+换句话说，这些多项式在点$$s \in \mathbb{F}_p, T(s) \neq 0$$的计算，没有揭示出任何原有赋值的信息。例如，因为$$T(s) \neq 0$$并且$$\sigma_1$$是随机的，所以$$\sigma_1 * T(s)$$也是一个随机的值，因此，$$L_z(s) = L(s) + \sigma_1 * T(s)$$没有揭示出L(s)的任何信息，因为它被随机数给掩盖了。
+
+看起来现在把基本功能都实现了，并且也保证了一定的零知识性，但是我们不难发现，仍然有两个问题困扰着我们：
+
+1. 在这个协议中，Bob需要一个**支持乘法**的同态加密函数(HH)。比如，他需要根据$$E(H(s))和E(T(s))$$计算出$$E(H(s) * T(s))$$。然而，目前为止，我们还没有看到过这种HH的例子，我们只见过可以支持加法和线性组合的HH。
+
+2. 上述的章节中，我们讨论了Alice和Bob间的交互式协议。不过，我们的最终目标是，能够让Alice发送一个单一的不需要交互的证明信息，并且可以被公开的验证——即，任何人都可以看见这个证明信息，都可以验证她的合法性，而不仅仅是Bob(之前和Alice交流过的那个人)可以验证。
+
+
 
 
 
