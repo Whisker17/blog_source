@@ -51,3 +51,6 @@ zk-SNARK ，即 “zero knowledge Succinct Non-interactive Argument of Knowledge
 
 ### NP 与 P 问题
 
+
+
+### Tate 配对
